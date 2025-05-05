@@ -1,25 +1,26 @@
-# SVGDreamer for Windows - Installation Guide
+# SVGDreamer for Windows - Installation Guide (Fixed)
 
-This repository provides a simplified way to install and run SVGDreamer on Windows systems.
+This guide provides a reliable way to install SVGDreamer on Windows systems. This updated version fixes the common NumPy and PyTorch compatibility issues.
 
-## What is SVGDreamer?
+## Prerequisites
 
-SVGDreamer is a text-to-SVG generation tool that can create fully editable vector graphics from text prompts. Unlike raster-based AI image generators, SVGDreamer outputs SVG files that can be edited in programs like Adobe Illustrator or Inkscape.
+- Windows 10 or 11
+- Python 3.9 (important: do not use Python 3.10 or newer)
+- Git installed
 
-## Installation Steps
+## Step 1: Install Python 3.9
 
-### Step 1: Install Python
-
-1. Download Python 3.9 from [python.org](https://www.python.org/downloads/windows/)
+1. Download Python 3.9 from [python.org](https://www.python.org/downloads/release/python-3913/)
+   - Download "Windows installer (64-bit)"
    - **Important**: During installation, check the box for "Add Python to PATH"
-   - Select "Install for all users" option
 
 2. Verify installation in Command Prompt:
    ```
    python --version
    ```
+   You should see `Python 3.9.x`
 
-### Step 2: Install Git
+## Step 2: Install Git
 
 1. Download Git from [git-scm.com](https://git-scm.com/download/win)
 2. Run the installer with default options
@@ -28,71 +29,70 @@ SVGDreamer is a text-to-SVG generation tool that can create fully editable vecto
    git --version
    ```
 
-### Step 3: Install Mambaforge and Initialize the Shell
+## Step 3: Install Miniforge (for Mamba)
 
-Mamba is a much faster alternative to Conda that dramatically speeds up dependency resolution.
-
-1. Download Mambaforge from this direct link:
+1. Download Miniforge from this direct link:
    [Miniforge3-Windows-x86_64.exe](https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Windows-x86_64.exe)
 
-2. Run the installer and follow these critical steps:
+2. Run the installer and follow these steps:
    - Select "Just Me" for installation type
    - **CRITICAL**: Check the box that says "Add Miniforge3 to my PATH environment variable"
    - Complete the installation
 
 3. **Initialize the shell** (CRITICAL):
-   - Open a new Command Prompt (not PowerShell) after installation
-   - Run the following command:
+   - Open a new Command Prompt (not PowerShell)
+   - Run:
      ```
      mamba shell init -s cmd.exe
      ```
-   - Close the Command Prompt window and open a new one
+   - Close and reopen Command Prompt
 
 4. Verify installation:
-   - In the new Command Prompt window, run:
-     ```
-     mamba --version
-     ```
+   ```
+   mamba --version
+   ```
 
-### Step 4: Clone This Repository
+## Step 4: Clone the Repository
 
 ```
 git clone https://github.com/saedarm/SVGDreamerforDummies.git
 cd SVGDreamerforDummies
 ```
 
-**Important Note**: All remaining commands should be run from within the SVGDreamerforDummies directory.
+**IMPORTANT**: All remaining commands should be run from the SVGDreamerforDummies directory.
 
-### Step 5: Create and Activate Environment
-
-Run these commands from within the SVGDreamerforDummies directory:
+## Step 5: Create and Activate Environment
 
 ```
 mamba create --name svgdreamer python=3.9 -y
 mamba activate svgdreamer
 ```
 
-### Step 6: Install PyTorch with Mamba
+## Step 6: Install PyTorch with SPECIFIC VERSIONS
 
-#### For NVIDIA GPU Users:
+For CPU-only Users:
 ```
-mamba install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch -y
-```
-
-#### For CPU-only Users:
-```
-mamba install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cpuonly -c pytorch -y
+mamba install pytorch=1.12.1 torchvision=0.13.1 torchaudio=0.12.1 cpuonly -c pytorch -y
 ```
 
-### Step 7: Install Additional Dependencies
+For NVIDIA GPU Users (if you have a compatible GPU):
+```
+mamba install pytorch=1.12.1 torchvision=0.13.1 torchaudio=0.12.1 cudatoolkit=11.3 -c pytorch -y
+```
 
-Make sure you are in the SVGDreamerforDummies directory. Then run:
+## Step 7: Install Compatible Dependencies
 
+It's critical to install a compatible NumPy version first:
+```
+pip install numpy==1.24.3
+```
+
+Then install the remaining requirements:
 ```
 pip install -r requirements.txt
 ```
 
-### Step 8: Configure for Model Download
+## Step 8: Configure for Model Download
 
 While still in the SVGDreamerforDummies directory:
 
@@ -104,86 +104,39 @@ While still in the SVGDreamerforDummies directory:
    ```
 3. Save the file
 
-### Step 9: Run Your First Example
-
-Each time you want to run SVGDreamer:
-
-1. Make sure you're in the SVGDreamerforDummies directory
-2. Activate the environment (if not already activated)
-3. Run the SVGDreamer command
+## Step 9: Run Your First Example
 
 ```
 mamba activate svgdreamer
-python svgdreamer.py x=lowpoly "prompt='A mountain landscape with trees'" result_path='./logs/FirstTest' diffuser.download=True
+python svgdreamer.py x=lowpoly "prompt='A mountain landscape'" result_path='./logs/FirstTest' diffuser.download=True
 ```
 
-The first run will take longer as it downloads the model. Your SVG files will be saved in the `logs/FirstTest` folder.
+## Troubleshooting Common Issues
 
-## Available Style Options
+### NumPy Compatibility Issues
 
-All commands below must be run from the SVGDreamerforDummies directory with the svgdreamer environment activated:
+If you see errors about NumPy versions or "numpy.core.multiarray failed to import":
 
-```
-mamba activate svgdreamer
-```
-
-SVGDreamer supports several pre-configured styles:
-
-### Low-Poly Style
-```
-python svgdreamer.py x=lowpoly "prompt='Your text here'" result_path='./logs/Output'
-```
-
-### Pixel Art Style
-```
-python svgdreamer.py x=pixelart "prompt='Your text here'" result_path='./logs/Output'
-```
-
-### Painting Style
-```
-python svgdreamer.py x=painting "prompt='Your text here'" x.num_paths=256 result_path='./logs/Output'
-```
-
-### Sketch Style
-```
-python svgdreamer.py x=sketch "prompt='Your text here'" result_path='./logs/Output'
-```
-
-### Iconography Style
-```
-python svgdreamer.py x=iconography "prompt='Your text here'" result_path='./logs/Output'
-```
-
-## Troubleshooting
-
-### "Mamba not recognized" Error
-
-If you see this error after installation:
-
-1. Try initializing Mamba:
+1. Make sure you've installed the exact version of NumPy we specified:
    ```
-   C:\Users\YourUsername\mambaforge\Scripts\mamba init
+   pip install numpy==1.24.3
    ```
 
-2. Or add these paths to your system PATH:
+2. If that doesn't work, try an even older version:
    ```
-   C:\Users\YourUsername\mambaforge
-   C:\Users\YourUsername\mambaforge\Scripts
-   C:\Users\YourUsername\mambaforge\Library\bin
+   pip install numpy==1.23.5
    ```
 
-### Out of Memory Errors
+### PyTorch Version Conflicts
 
-Add `state.mprec='fp16'` to use less memory:
+If you see errors about PyTorch version conflicts:
 
-```
-python svgdreamer.py x=lowpoly "prompt='Your text here'" result_path='./logs/Output' state.mprec='fp16'
-```
+1. Make sure you install PyTorch, torchvision, and torchaudio with specific versions and BEFORE installing other requirements:
+   ```
+   pip uninstall -y torch torchvision torchaudio
+   mamba install pytorch=1.12.1 torchvision=0.13.1 torchaudio=0.12.1 cpuonly -c pytorch -y
+   ```
 
 ## Credits
 
-This is a simplified fork of the [original SVGDreamer project](https://github.com/ximinng/SVGDreamer) to make installation easier on Windows systems.
-
-## License
-
-The original SVGDreamer is licensed under MIT License.
+This is a simplified fork of the [original SVGDreamer project](https://github.com/ximinng/SVGDreamer) with fixes for common Windows compatibility issues.
