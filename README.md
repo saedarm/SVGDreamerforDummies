@@ -28,20 +28,28 @@ SVGDreamer is a text-to-SVG generation tool that can create fully editable vecto
    git --version
    ```
 
-### Step 3: Install Mambaforge
+### Step 3: Install Mambaforge and Initialize the Shell
 
 Mamba is a much faster alternative to Conda that dramatically speeds up dependency resolution.
 
-1. Download Mambaforge from [GitHub](https://github.com/conda-forge/miniforge#mambaforge)
-   - Choose the Windows 64-bit version
+1. Download Mambaforge from this direct link:
+   [Miniforge3-Windows-x86_64.exe](https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Windows-x86_64.exe)
 
 2. Run the installer and follow these critical steps:
    - Select "Just Me" for installation type
-   - **CRITICAL**: Check the box that says "Add Mambaforge3 to my PATH environment variable"
+   - **CRITICAL**: Check the box that says "Add Miniforge3 to my PATH environment variable"
    - Complete the installation
 
-3. Verify installation:
-   - Open a new Command Prompt and run:
+3. **Initialize the shell** (CRITICAL):
+   - Open a new Command Prompt (not PowerShell) after installation
+   - Run the following command:
+     ```
+     mamba shell init -s cmd.exe
+     ```
+   - Close the Command Prompt window and open a new one
+
+4. Verify installation:
+   - In the new Command Prompt window, run:
      ```
      mamba --version
      ```
@@ -53,7 +61,11 @@ git clone https://github.com/saedarm/SVGDreamerforDummies.git
 cd SVGDreamerforDummies
 ```
 
+**Important Note**: All remaining commands should be run from within the SVGDreamerforDummies directory.
+
 ### Step 5: Create and Activate Environment
+
+Run these commands from within the SVGDreamerforDummies directory:
 
 ```
 mamba create --name svgdreamer python=3.9 -y
@@ -74,11 +86,15 @@ mamba install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cpuonly -c 
 
 ### Step 7: Install Additional Dependencies
 
+Make sure you are in the SVGDreamerforDummies directory. Then run:
+
 ```
 pip install -r requirements.txt
 ```
 
 ### Step 8: Configure for Model Download
+
+While still in the SVGDreamerforDummies directory:
 
 1. Open the file `conf/config.yaml` 
 2. Add or modify:
@@ -90,6 +106,12 @@ pip install -r requirements.txt
 
 ### Step 9: Run Your First Example
 
+Each time you want to run SVGDreamer:
+
+1. Make sure you're in the SVGDreamerforDummies directory
+2. Activate the environment (if not already activated)
+3. Run the SVGDreamer command
+
 ```
 mamba activate svgdreamer
 python svgdreamer.py x=lowpoly "prompt='A mountain landscape with trees'" result_path='./logs/FirstTest' diffuser.download=True
@@ -98,6 +120,12 @@ python svgdreamer.py x=lowpoly "prompt='A mountain landscape with trees'" result
 The first run will take longer as it downloads the model. Your SVG files will be saved in the `logs/FirstTest` folder.
 
 ## Available Style Options
+
+All commands below must be run from the SVGDreamerforDummies directory with the svgdreamer environment activated:
+
+```
+mamba activate svgdreamer
+```
 
 SVGDreamer supports several pre-configured styles:
 
@@ -143,6 +171,14 @@ If you see this error after installation:
    C:\Users\YourUsername\mambaforge\Scripts
    C:\Users\YourUsername\mambaforge\Library\bin
    ```
+
+### Out of Memory Errors
+
+Add `state.mprec='fp16'` to use less memory:
+
+```
+python svgdreamer.py x=lowpoly "prompt='Your text here'" result_path='./logs/Output' state.mprec='fp16'
+```
 
 ## Credits
 
